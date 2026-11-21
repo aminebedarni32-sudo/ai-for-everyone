@@ -122,9 +122,16 @@ const password = () => el("authPassword").value;
 const status = message => el("authStatus").textContent = message;
 
 function showUser(user) {
+  const signedIn = !!user;
   el("authUser").textContent = user ? "Signed in as: " + user.email : "";
-  el("signOutBtn").hidden = !user;
-  if (user) status("You are signed in successfully.");
+  el("signOutBtn").hidden = !signedIn;
+  el("signUpBtn").hidden = signedIn;
+  el("signInBtn").hidden = signedIn;
+  el("authEmail").hidden = signedIn;
+  el("authPassword").hidden = signedIn;
+  document.querySelector('label[for="authEmail"]').hidden = signedIn;
+  document.querySelector('label[for="authPassword"]').hidden = signedIn;
+  status(signedIn ? "You are signed in successfully." : "You are not signed in.");
 }
 
 el("signUpBtn").addEventListener("click", async () => {

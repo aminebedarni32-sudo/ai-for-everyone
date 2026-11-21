@@ -1,0 +1,10 @@
+{
+  "name": "ai-for-everyone",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "description": "AI FOR EVERYONE community website with a server-side USDT TRC20 verification starter",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2"
+  }
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090d1c">
+  <title>AI FOR EVERYONE — Learn AI. Build the Future.</title>
+  <style>
+    :root{color-scheme:dark;--bg:#090d1c;--panel:#111a2e;--text:#f4f7ff;--muted:#aab5cc;--line:#263653;--cyan:#5ce1e6;--violet:#9b8cff}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#17274b 0,transparent 45%),var(--bg);color:var(--text);font:16px/1.6 system-ui,sans-serif}
+    main{width:min(920px,92%);margin:0 auto;padding:48px 0 80px}.tag{color:var(--cyan);letter-spacing:.16em;font-size:.75rem;font-weight:700}h1{font-size:clamp(2.3rem,7vw,4.7rem);line-height:1.05;margin:.5rem 0;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet));background-clip:text;color:transparent}h2{margin:0 0 12px}p{color:var(--muted)}.panel{background:linear-gradient(145deg,#121e35,#0e1527);border:1px solid var(--line);border-radius:22px;padding:24px;margin-top:24px;box-shadow:0 18px 60px #0004}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.tile{padding:16px;border:1px solid var(--line);border-radius:14px;background:#ffffff06}.amounts{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.amounts button,button{border:1px solid #46617f;background:#172744;color:var(--text);border-radius:12px;padding:12px 18px;font:inherit;cursor:pointer}.amounts button[aria-pressed=true],button.primary{background:linear-gradient(90deg,#087f91,#6353c9);border:0}.field{display:block;width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#080f20;color:white;margin:8px 0 14px}.small{font-size:.88rem}.status{padding:12px;border-radius:10px;background:#0a1222;border:1px solid var(--line);white-space:pre-wrap}.wallet{overflow-wrap:anywhere;color:var(--cyan)}footer{margin-top:34px;color:var(--muted);font-size:.85rem}
+  </style>
+</head>
+<body><main>
+  <div class="tag">A GLOBAL LEARNING COMMUNITY</div>
+  <h1>AI FOR EVERYONE</h1><p>Learn AI. Build the Future. — Making artificial intelligence, digital skills and online safety easier to access for everyone.</p>
+  <section class="grid" aria-label="Learning areas">
+    <div class="tile"><b>AI from Zero</b><p class="small">Understand AI step by step, even if you are a beginner.</p></div>
+    <div class="tile"><b>Digital Skills</b><p class="small">Learn practical tools for study, work and creativity.</p></div>
+    <div class="tile"><b>Digital Safety</b><p class="small">Protect privacy and recognize scams and threats.</p></div>
+  </section>
+  <section class="panel"><h2>Support open learning</h2><p>Your contribution is optional. Choose an amount to create a support request. Live payments remain disabled during setup.</p>
+    <div class="amounts" id="amounts"><button type="button" data-amount="1" aria-pressed="true">1 USDT</button><button type="button" data-amount="3" aria-pressed="false">3 USDT</button><button type="button" data-amount="5" aria-pressed="false">5 USDT</button><button type="button" data-amount="10" aria-pressed="false">10 USDT</button><button type="button" data-amount="50" aria-pressed="false">50 USDT</button></div>
+    <button class="primary" id="create">Create support request</button>
+    <div id="order" class="status small" style="margin-top:16px" aria-live="polite">No support request created yet.</div>
+    <div id="verifyBox" hidden><label for="txid">Transaction ID (TXID)</label><input class="field" id="txid" maxlength="64" placeholder="Paste the 64-character transaction ID"><button id="verify" type="button">Check transaction</button></div>
+  </section>
+  <footer>AI FOR EVERYONE is an independent community initiative. Contributions are voluntary. Do not send funds until the site explicitly confirms that live payments are enabled and you have checked the network and recipient address.</footer>
+</main>
+<script>
+let selectedAmount='1', currentOrder=null;
+const orderBox=document.getElementById('order');
+document.querySelectorAll('[data-amount]').forEach(btn=>btn.addEventListener('click',()=>{selectedAmount=btn.dataset.amount;document.querySelectorAll('[data-amount]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));}));
+document.getElementById('create').addEventListener('click',async()=>{
+  orderBox.textContent='Creating request…';
+  try{const r=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:selectedAmount})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Request failed');currentOrder=d;
+    orderBox.innerHTML='';const lines=[`Request: ${d.orderId}`,`Amount: ${d.amountUSDT} USDT`,`Network: ${d.network}`,`Recipient: ${d.receiveAddress}`,d.message];lines.forEach(line=>{const p=document.createElement('p');p.textContent=line;if(line.startsWith('Recipient:'))p.className='wallet';orderBox.appendChild(p);});
+    document.getElementById('verifyBox').hidden=!d.paymentsEnabled;
+  }catch(e){orderBox.textContent=e.message;}
+});
+document.getElementById('verify').addEventListener('click',async()=>{
+  const txid=document.getElementById('txid').value.trim();if(!currentOrder?.orderId){orderBox.textContent='Create a request first.';return;}
+  orderBox.textContent='Checking the confirmed TRON transaction…';
+  try{const r=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:currentOrder.orderId,txid})});const d=await r.json();orderBox.textContent=d.message||d.error||d.status||'No result';}catch{orderBox.textContent='Could not reach the verification service. Try again.';}
+});
+</script></body></html>

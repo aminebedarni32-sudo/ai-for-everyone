@@ -23,7 +23,26 @@ section{scroll-margin-top:20px}.section-head{display:flex;justify-content:space-
   <a class="brand" href="#"><span>AI</span> FOR EVERYONE</a>
   <nav class="nav"><a href="#academy" data-en="Academy" data-ar="الأكاديمية">Academy</a><a href="#path" data-en="Learning paths" data-ar="المسارات">Learning paths</a><a href="#about" data-en="About" data-ar="عن المنصة">About</a><button class="lang" id="langBtn" type="button">العربية</button></nav>
 </header>
-<main>
+<main>\n
+<section id="account" class="panel" style="margin:25px 0">
+  <div class="tag">YOUR ACCOUNT</div>
+  <h2>Join AI FOR EVERYONE</h2>
+  <p class="note">Create your free account or sign in to continue learning.</p>
+  <div id="authForm" style="display:grid;gap:12px;max-width:440px">
+    <label for="authEmail">Email address</label>
+    <input id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" required style="padding:13px;border:1px solid #263957;border-radius:10px;background:#0c1528;color:#fff">
+    <label for="authPassword">Password</label>
+    <input id="authPassword" type="password" placeholder="At least 6 characters" autocomplete="current-password" required style="padding:13px;border:1px solid #263957;border-radius:10px;background:#0c1528;color:#fff">
+    <div class="actions">
+      <button class="btn primary" id="signUpBtn" type="button">Create account</button>
+      <button class="btn" id="signInBtn" type="button">Sign in</button>
+      <button class="btn" id="signOutBtn" type="button" hidden>Sign out</button>
+    </div>
+    <p id="authStatus" class="note" aria-live="polite">You are not signed in.</p>
+    <p id="authUser" class="note"></p>
+  </div>
+</section>
+
 <section class="hero">
   <div class="tag" data-en="A GLOBAL LEARNING COMMUNITY" data-ar="مجتمع تعلّم عالمي">A GLOBAL LEARNING COMMUNITY</div>
   <h1>AI FOR EVERYONE</h1>
@@ -91,5 +110,67 @@ $("completeBtn").addEventListener("click",()=>{completed.add(current);localStora
 $("langBtn").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";$("langBtn").textContent=lang==="en"?"العربية":"English";document.querySelectorAll("[data-en]").forEach(el=>el.textContent=el.dataset[lang]);renderLesson();});
 renderLesson();
 </script>
+
+<script type="module" id="supabase-auth-module">
+import { SUPABASE_URL, SUPABASE_KEY } from "./supabase-config.js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const el = id => document.getElementById(id);
+const email = () => el("authEmail").value.trim();
+const password = () => el("authPassword").value;
+const status = message => el("authStatus").textContent = message;
+
+function showUser(user) {
+  el("authUser").textContent = user ? "Signed in as: " + user.email : "";
+  el("signOutBtn").hidden = !user;
+  if (user) status("You are signed in successfully.");
+}
+
+el("signUpBtn").addEventListener("click", async () => {
+  if (!email() || password().length < 6) {
+    status("Enter a valid email and a password of at least 6 characters.");
+    return;
+  }
+  status("Creating your account...");
+  const { data, error } = await supabase.auth.signUp({
+    email: email(),
+    password: password(),
+    options: { emailRedirectTo: window.location.origin }
+  });
+  if (error) status("Error: " + error.message);
+  else if (data.session) showUser(data.user);
+  else status("Account created. Check your email to confirm your account.");
+});
+
+el("signInBtn").addEventListener("click", async () => {
+  if (!email() || !password()) {
+    status("Enter your email and password.");
+    return;
+  }
+  status("Signing in...");
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email(),
+    password: password()
+  });
+  if (error) status("Error: " + error.message);
+  else showUser(data.user);
+});
+
+el("signOutBtn").addEventListener("click", async () => {
+  status("Signing out...");
+  const { error } = await supabase.auth.signOut();
+  if (error) status("Error: " + error.message);
+  else showUser(null);
+});
+
+supabase.auth.onAuthStateChange((_event, session) => {
+  showUser(session?.user ?? null);
+});
+
+const { data: { session } } = await supabase.auth.getSession();
+showUser(session?.user ?? null);
+</script>
+
 </body>
 </html>

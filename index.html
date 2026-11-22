@@ -93,12 +93,17 @@ section{scroll-margin-top:20px}.section-head{display:flex;justify-content:space-
 
 <section id="academy">
  <div class="section-head"><div><div class="tag" data-en="INTERACTIVE ACADEMY" data-ar="الأكاديمية التفاعلية">INTERACTIVE ACADEMY</div><h2 data-en="Your first lessons" data-ar="دروسك الأولى">Your first lessons</h2><p data-en="Read a short lesson, answer its question, and mark it complete." data-ar="اقرأ درساً قصيراً، وأجب عن سؤاله، ثم أكمل الدرس.">Read a short lesson, answer its question, and mark it complete.</p></div><div class="pill" id="progressText">0 / 12 completed</div></div>
+ <div id="academyLocked" class="panel" role="status">
+  <span id="academyLockedMessage">Sign in to your account to access all 12 lessons.</span>
+  <p><a href="#account">Go to sign in or create an account</a></p>
+ </div>
+ <div id="academyContent" hidden>
  <div class="progress-line"><span id="progressBar"></span></div>
  <div class="learn-layout">
   <div class="lesson-list" id="lessonList" aria-label="Lessons"></div>
   <article class="panel lesson-content" aria-live="polite">
    <div class="tag" id="lessonCategory">LESSON 01</div>
-   <h3 id="lessonTitle">What is Artificial Intelligence?</h3>
+   <h3 id="lessonTitle"></h3>
    <p class="lead" id="lessonIntro"></p>
    <div id="lessonBody"></div>
    <div class="quiz"><h4 id="quizQuestion">Quick check</h4><div id="quizChoices"></div><div class="feedback" id="feedback" aria-live="polite"></div></div>
@@ -106,6 +111,7 @@ section{scroll-margin-top:20px}.section-head{display:flex;justify-content:space-
   </article>
  </div>
  <p class="note" data-en="Your lesson progress is saved only in this browser on this device for now. Creating accounts and cloud sync can be added in a later version." data-ar="يُحفظ تقدمك حالياً داخل هذا المتصفح وعلى هذا الجهاز فقط. يمكن إضافة الحسابات والمزامنة السحابية في إصدار لاحق.">Your lesson progress is saved only in this browser on this device for now. Creating accounts and cloud sync can be added in a later version.</p>
+ </div>
 </section>
 
 <section id="about" class="support panel">
@@ -117,26 +123,82 @@ section{scroll-margin-top:20px}.section-head{display:flex;justify-content:space-
 <footer>© 2026 AI FOR EVERYONE · <span data-en="Learn AI. Build the Future." data-ar="تعلّم الذكاء الاصطناعي واصنع المستقبل.">Learn AI. Build the Future.</span></footer>
 </div>
 <script>
-const lessons = [
-{cat:"AI FOUNDATIONS",title:"What is Artificial Intelligence?",intro:"Artificial intelligence (AI) is technology that helps computers perform tasks that usually require human-like abilities, such as understanding language, recognizing images, or finding patterns.",body:"<p>Think of AI as a tool that finds patterns in information and uses those patterns to produce a result.</p><div class='concept'><b>Simple example:</b> An email app may use AI to recognize messages that look like spam.</div><ul><li>AI is made by people and organizations.</li><li>It can be useful, but it can also make mistakes.</li><li>It does not understand the world exactly as a human does.</li></ul>",q:"Which statement best describes AI?",choices:["A tool that can perform tasks by learning patterns in data","A human being inside a computer","A system that is always correct"],a:0,why:"Correct. Many AI systems identify patterns in data to produce predictions or content."},
-{cat:"AI FOUNDATIONS",title:"How does AI learn?",intro:"Many AI systems are trained using examples. During training, a model adjusts its internal settings to find patterns that help it perform a task.",body:"<p>Imagine showing a system thousands of labelled pictures of cats and dogs. It can learn visual patterns that often distinguish them.</p><div class='concept'><b>Remember:</b> Training examples influence what a model can do. Poor, incomplete, or biased examples can lead to poor results.</div><ul><li>Data means the examples or information used.</li><li>Training is the process of learning patterns.</li><li>Testing checks how well the model works on new examples.</li></ul>",q:"Why do AI systems need training examples?",choices:["To give them patterns to learn from","To guarantee perfect answers","To connect them to electricity"],a:0,why:"Exactly. Training examples help a model learn patterns that it can apply to new inputs."},
-{cat:"AI FOUNDATIONS",title:"Where do we use AI?",intro:"AI already appears in everyday tools: translation, maps, recommendations, photo organization, voice assistants, and spam filters.",body:"<p>When a map estimates traffic or a streaming service recommends a film, AI may be helping analyze patterns.</p><div class='concept'><b>Try this:</b> Think of one app you use. Does it recommend, predict, translate, recognize, or generate something?</div><ul><li>AI can save time.</li><li>Recommendations may reflect incomplete data.</li><li>You remain responsible for important decisions.</li></ul>",q:"Which is a common use of AI?",choices:["Recommending a video based on viewing patterns","Guaranteeing tomorrow's weather","Making every online post true"],a:0,why:"Correct. Recommendation systems often use patterns in user activity."},
-{cat:"PROMPT ENGINEERING",title:"What is a prompt?",intro:"A prompt is the instruction or question you give an AI tool. Clear prompts make it easier to get useful responses.",body:"<p>A vague prompt such as “Tell me about science” gives little direction. A clearer prompt explains the task and the expected result.</p><div class='concept'><b>Example:</b> “Explain photosynthesis to a 12-year-old in five short bullet points.”</div><ul><li>Say what you want done.</li><li>Give useful context.</li><li>Describe the format or length you need.</li></ul>",q:"What is a prompt?",choices:["An instruction or question given to an AI tool","The computer's power cable","A guarantee that the answer is true"],a:0,why:"Correct. A prompt tells the AI what task you want it to perform."},
-{cat:"PROMPT ENGINEERING",title:"Give AI useful context",intro:"Context helps an AI tool understand your situation, audience, and goal. Share only information that is safe and necessary.",body:"<p>Compare “Write an email” with “Write a polite email asking my teacher for an appointment next week.” The second prompt gives more useful context.</p><div class='concept'><b>Prompt formula:</b> Task + Context + Audience + Format.</div><ul><li>Task: what should the AI do?</li><li>Context: what background matters?</li><li>Audience: who will read it?</li><li>Format: bullets, table, email, or steps?</li></ul>",q:"Which prompt gives better context?",choices:["Make something","Draft a friendly 100-word welcome message for new volunteers","Do it now"],a:1,why:"Correct. It specifies the task, tone, length, and audience."},
-{cat:"PROMPT ENGINEERING",title:"Check and improve AI answers",intro:"AI-generated content can contain errors, missing context, or made-up details. Review important answers before using them.",body:"<p>Ask the tool to explain its reasoning or list sources, then verify key facts independently. A confident tone does not prove that an answer is correct.</p><div class='concept'><b>Good habit:</b> Verify dates, figures, quotations, legal advice, medical claims, and other high-impact information with reliable sources.</div><ul><li>Check important facts.</li><li>Ask follow-up questions when unclear.</li><li>Do not paste private information into tools without understanding their data practices.</li></ul>",q:"What should you do with an important AI-generated fact?",choices:["Verify it using reliable sources","Trust it because it sounds confident","Share it immediately"],a:0,why:"Exactly. AI can make mistakes, so important information should be checked."},
-{cat:"BUILD WITH AI",title:"Plan a small project",intro:"A useful first project starts with a clear problem, a specific audience, and a small set of features.",body:"<p>For example, a student study planner might let someone add tasks, set due dates, and mark tasks complete.</p><div class='concept'><b>Mini plan:</b> Problem → Users → 3 essential features → How you will test it.</div><ul><li>Keep the first version small.</li><li>Describe what success looks like.</li><li>Ask AI to help brainstorm, but review the plan yourself.</li></ul>",q:"What is a good first step when planning an app?",choices:["Identify the problem and who has it","Add every feature you can imagine","Publish without testing"],a:0,why:"Correct. Start with a real problem and the people you want to help."},
-{cat:"BUILD WITH AI",title:"Understand a web page",intro:"A basic web page uses HTML for structure, CSS for appearance, and JavaScript for interactive behavior.",body:"<ul><li><b>HTML:</b> headings, paragraphs, links, and buttons.</li><li><b>CSS:</b> colors, spacing, layout, and responsive design.</li><li><b>JavaScript:</b> actions such as opening menus or checking quiz answers.</li></ul><div class='concept'><b>Think of a house:</b> HTML is the structure, CSS is the decoration, and JavaScript is the wiring that makes things respond.</div>",q:"Which technology controls the visual styling of a web page?",choices:["CSS","HTML only","A domain name"],a:0,why:"Correct. CSS controls the visual presentation and layout."},
-{cat:"BUILD WITH AI",title:"Test before you publish",intro:"Testing helps you find problems before visitors use your project. Check it on different screen sizes and try every important action.",body:"<p>Ask a friend to try the page without instructions. Watch where they get confused. Fix errors and test again.</p><div class='concept'><b>Starter checklist:</b> links work, buttons respond, text is readable on mobile, and no private keys are exposed in public files.</div><ul><li>Test on a phone and a computer.</li><li>Check forms and error messages.</li><li>Never publish passwords or secret API keys in frontend code.</li></ul>",q:"Where should secret API keys be stored?",choices:["In secure server-side environment variables","Inside public HTML","In a public GitHub README"],a:0,why:"Correct. Keep secrets on the server in protected environment variables."},
-{cat:"AI & DIGITAL SAFETY",title:"Protect your personal information",intro:"Personal information can identify or expose you. Share the minimum information needed when using online services and AI tools.",body:"<p>Examples include passwords, private documents, financial details, identity numbers, and personal contact information.</p><div class='concept'><b>Safer habit:</b> Replace real names and sensitive details with fictional examples when asking an AI tool to help with a private document.</div><ul><li>Use unique passwords.</li><li>Turn on two-factor authentication where available.</li><li>Review an app's privacy settings and data policy.</li></ul>",q:"What is the safest approach when using an AI tool with private data?",choices:["Remove or avoid sharing sensitive details","Paste all details to get a better answer","Share passwords if the tool asks"],a:0,why:"Correct. Minimize sensitive information and never share passwords."},
-{cat:"AI & DIGITAL SAFETY",title:"Recognize suspicious messages",intro:"Scam messages often create urgency, promise rewards, or ask you to click a link and reveal private information.",body:"<p>Pause before acting. Check the sender through a trusted channel, inspect the web address carefully, and do not open unexpected attachments.</p><div class='concept'><b>Warning signs:</b> pressure to act now, unusual payment requests, unexpected prizes, spelling or address mismatches, and requests for login codes.</div><ul><li>Do not share one-time verification codes.</li><li>Visit official websites directly instead of using suspicious links.</li><li>Report and block suspicious accounts.</li></ul>",q:"A message asks for your login code urgently. What should you do?",choices:["Do not share it; verify through the official service","Send it quickly","Forward it to friends"],a:0,why:"Correct. Never share login or one-time verification codes."},
-{cat:"AI & DIGITAL SAFETY",title:"Spot limits and bias in AI",intro:"AI tools can reflect errors or bias in the data and design used to build them. Their output should be reviewed with care.",body:"<p>An AI system may work well for some groups or situations and poorly for others. It may also produce incorrect information in a convincing way.</p><div class='concept'><b>Responsible use:</b> Consider who could be affected, check results from more than one source, and keep humans involved in important decisions.</div><ul><li>Question unexpected results.</li><li>Check whether information is current.</li><li>Do not use AI as the only authority for high-impact decisions.</li></ul>",q:"Why should AI results be reviewed?",choices:["They may contain errors or bias","They are always neutral","Reviewing makes AI stop working"],a:0,why:"Correct. Review helps catch mistakes, bias, and missing context."}
-];
+let lessons = [];
 let current=0,completed=new Set(JSON.parse(localStorage.getItem("aife_completed")||"[]")),lang="en",answered=false;
 const $=id=>document.getElementById(id);
 function updateProgress(){const n=completed.size;$("progressText").textContent=lang==="en"?`${n} / 12 completed`:`${n} / 12 مكتملة`;$("progressBar").style.width=(n/12*100)+"%";}
-function renderList(){ $("lessonList").innerHTML="";lessons.forEach((l,i)=>{const b=document.createElement("button");b.type="button";b.className="lesson-btn"+(i===current?" active":"");b.innerHTML=`${completed.has(i)?"✓":"○"} ${String(i+1).padStart(2,"0")} · ${l.title}<small>${l.cat}</small>`;b.addEventListener("click",()=>{current=i;renderLesson();});$("lessonList").appendChild(b);});}
-function renderLesson(){const l=lessons[current];$("lessonCategory").textContent=`${l.cat} · LESSON ${String(current+1).padStart(2,"0")}`;$("lessonTitle").textContent=l.title;$("lessonIntro").textContent=l.intro;$("lessonBody").innerHTML=l.body;$("quizQuestion").textContent=l.q;$("quizChoices").innerHTML="";$("feedback").textContent="";answered=false;l.choices.forEach((c,i)=>{const b=document.createElement("button");b.className="choice";b.type="button";b.textContent=c;b.addEventListener("click",()=>{if(answered)return;answered=true;const ok=i===l.a;b.classList.add(ok?"correct":"wrong");$("feedback").textContent=(ok?"✓ ":"✕ ")+l.why;if(!ok){$("quizChoices").children[l.a].classList.add("correct");}});$("quizChoices").appendChild(b);});$("completeBtn").textContent=completed.has(current)?(lang==="en"?"✓ Completed":"✓ مكتمل"):(lang==="en"?"Mark lesson complete":"وضع علامة إكمال");$("prevBtn").disabled=current===0;$("nextBtn").disabled=current===11;renderList();updateProgress();}
-$("completeBtn").addEventListener("click",()=>{completed.add(current);localStorage.setItem("aife_completed",JSON.stringify([...completed]));renderLesson();});$("prevBtn").addEventListener("click",()=>{if(current>0){current--;renderLesson();}});$("nextBtn").addEventListener("click",()=>{if(current<11){current++;renderLesson();}});
+function renderList(){
+ const list=$("lessonList");
+ list.innerHTML="";
+ lessons.forEach((l,i)=>{
+  const b=document.createElement("button");
+  b.type="button";
+  b.className="lesson-btn"+(i===current?" active":"");
+  b.innerHTML=`${completed.has(i)?"✓":"○"} ${String(i+1).padStart(2,"0")} · ${l.title}<small>${l.cat}</small>`;
+  b.addEventListener("click",()=>{current=i;renderLesson();});
+  list.appendChild(b);
+ });
+}
+function renderLesson(){
+ const l=lessons[current];
+ if(!l)return;
+ $("lessonCategory").textContent=`${l.cat} · LESSON ${String(current+1).padStart(2,"0")}`;
+ $("lessonTitle").textContent=l.title;
+ $("lessonIntro").textContent=l.intro;
+ $("lessonBody").innerHTML=l.body;
+ $("quizQuestion").textContent=l.q;
+ $("quizChoices").innerHTML="";
+ $("feedback").textContent="";
+ answered=false;
+ l.choices.forEach((c,i)=>{
+  const b=document.createElement("button");
+  b.className="choice";
+  b.type="button";
+  b.textContent=c;
+  b.addEventListener("click",()=>{
+   if(answered)return;
+   answered=true;
+   const ok=i===l.a;
+   b.classList.add(ok?"correct":"wrong");
+   $("feedback").textContent=(ok?"✓ ":"✕ ")+l.why;
+   if(!ok)$("quizChoices").children[l.a].classList.add("correct");
+  });
+  $("quizChoices").appendChild(b);
+ });
+ $("completeBtn").textContent=completed.has(current)?(lang==="en"?"✓ Completed":"✓ مكتمل"):(lang==="en"?"Mark lesson complete":"وضع علامة إكمال");
+ $("prevBtn").disabled=current===0;
+ $("nextBtn").disabled=current===lessons.length-1;
+ renderList();
+ updateProgress();
+}
+
+window.setAcademyLessons = function(rows){
+ lessons=rows;
+ current=0;
+ $("academyLocked").hidden=true;
+ $("academyContent").hidden=false;
+ renderLesson();
+};
+
+window.lockAcademy = function(message){
+ lessons=[];
+ current=0;
+ $("academyContent").hidden=true;
+ $("academyLocked").hidden=false;
+ $("academyLockedMessage").textContent=message;
+ $("lessonList").innerHTML="";
+ $("lessonCategory").textContent="";
+ $("lessonTitle").textContent="";
+ $("lessonIntro").textContent="";
+ $("lessonBody").innerHTML="";
+ $("quizChoices").innerHTML="";
+ $("quizQuestion").textContent="";
+ $("feedback").textContent="";
+ $("progressText").textContent=lang==="en"?"Sign in to view your progress":"سجّل الدخول لعرض تقدمك";
+ $("progressBar").style.width="0%";
+};
+
+$("completeBtn").addEventListener("click",()=>{if(!lessons[current])return;completed.add(current);localStorage.setItem("aife_completed",JSON.stringify([...completed]));renderLesson();});$("prevBtn").addEventListener("click",()=>{if(lessons.length&&current>0){current--;renderLesson();}});$("nextBtn").addEventListener("click",()=>{if(lessons.length&&current<lessons.length-1){current++;renderLesson();}});
 
 const themeButton = $("themeBtn");
 function applyTheme(theme){
@@ -151,7 +213,7 @@ themeButton.addEventListener("click",()=>{
 });
 
 $("langBtn").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";$("langBtn").textContent=lang==="en"?"العربية":"English";document.querySelectorAll("[data-en]").forEach(el=>el.textContent=el.dataset[lang]);renderLesson();});
-renderLesson();
+window.lockAcademy("Sign in to your account to access all 12 lessons.");
 </script>
 
 <script type="module" id="supabase-auth-module">
@@ -175,6 +237,35 @@ function showUser(user) {
   document.querySelector('label[for="authEmail"]').hidden = signedIn;
   document.querySelector('label[for="authPassword"]').hidden = signedIn;
   status(signedIn ? "You are signed in successfully." : "You are not signed in.");
+}
+
+async function loadAcademy(user) {
+  if (!user) {
+    window.lockAcademy("Sign in to your account to access all 12 lessons.");
+    return;
+  }
+
+  status("Loading your lessons...");
+  const { data, error } = await supabase
+    .from("academy_lessons")
+    .select("lesson_index, content")
+    .eq("is_published", true)
+    .order("lesson_index");
+
+  if (error) {
+    window.lockAcademy("The lessons could not be loaded. Please try again.");
+    status("Could not load lessons: " + error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    window.lockAcademy("No published lessons are available yet.");
+    status("No published lessons were found.");
+    return;
+  }
+
+  window.setAcademyLessons(data.map(row => row.content));
+  status("Lessons loaded successfully.");
 }
 
 el("signUpBtn").addEventListener("click", async () => {
@@ -216,10 +307,14 @@ el("signOutBtn").addEventListener("click", async () => {
 
 supabase.auth.onAuthStateChange((_event, session) => {
   showUser(session?.user ?? null);
+  setTimeout(() => {
+    loadAcademy(session?.user ?? null);
+  }, 0);
 });
 
 const { data: { session } } = await supabase.auth.getSession();
 showUser(session?.user ?? null);
+await loadAcademy(session?.user ?? null);
 </script>
 
 </body>
